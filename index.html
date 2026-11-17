@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório do Reflexo</title>
+<style>
+  /* =================== CONFIGURAÇÃO DO PROFESSOR ===================
+     Cole entre as aspas o LINK PRÉ-PREENCHIDO do seu Google Formulário,
+     gerado com estes valores de exemplo:
+       Apelido = APELIDO · Tempo = 111 · Sono = 222 · Café = Sim
+       Celular = 333 · Videogame = Sim
+     (Formulário › ⋮ › Gerar link pré-preenchido › Obter link › Copiar link)
+     O link vai no script, no fim da página (procure LINK_FORMULARIO).
+  ================================================================== */
+  :root{--azul:#0B4FA8;--azul2:#083b7e;--verde:#1f9d55;--verm:#d64545;--fundo:#f4f6fb;--texto:#1d2433;--cinza:#6b7280;--card:#fff;--borda:#dfe3ec}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--texto)}
+  header{background:var(--azul);color:#fff;padding:14px 16px}
+  header .in{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  header h1{margin:0;font-size:1.25rem}
+  header small{opacity:.85}
+  main{max-width:760px;margin:0 auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:20px;margin-bottom:16px}
+  h2{margin:0 0 8px;font-size:1.2rem;color:var(--azul)}
+  p{line-height:1.5}
+  label{display:block;font-weight:600;margin:14px 0 6px}
+  input[type=text],input[type=number]{width:100%;padding:12px;border:1px solid var(--borda);border-radius:10px;font-size:1rem}
+  .op{display:flex;gap:10px;flex-wrap:wrap}
+  .op button{flex:1;min-width:110px}
+  button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 16px;font-weight:600}
+  .pri{background:var(--azul);color:#fff}
+  .pri:hover{background:var(--azul2)}
+  .sec{background:#e8eefb;color:var(--azul)}
+  .sec.on{background:var(--azul);color:#fff}
+  .aviso{background:#fff7e0;border-left:4px solid #e0a800;padding:10px 12px;border-radius:8px;font-size:.92rem}
+  .erro{color:var(--verm);font-weight:600;min-height:1.2em;margin-top:8px}
+  #arena{height:320px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;
+    font-size:1.6rem;font-weight:800;text-align:center;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer;padding:16px}
+  #arena small{font-size:1rem;font-weight:500;margin-top:8px;opacity:.95}
+  .st-ini{background:var(--azul)} .st-esp{background:var(--verm)} .st-ja{background:var(--verde)} .st-cedo{background:#7a3aa8} .st-res{background:var(--azul2)}
+  .bolinhas{display:flex;gap:8px;justify-content:center;margin:12px 0}
+  .bolinhas span{width:16px;height:16px;border-radius:50%;background:var(--borda)}
+  .bolinhas span.ok{background:var(--verde)}
+  .num{font-size:2.6rem;font-weight:800;color:var(--azul);margin:0}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+  .kpi{background:var(--fundo);border-radius:10px;padding:12px;text-align:center}
+  .kpi b{display:block;font-size:1.4rem;color:var(--azul)}
+  .kpi span{font-size:.85rem;color:var(--cinza)}
+  table{width:100%;border-collapse:collapse;font-size:.95rem}
+  th,td{padding:6px 8px;border-bottom:1px solid var(--borda);text-align:left}
+  .acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .acoes button{flex:1;min-width:180px}
+  .oculto{display:none}
+  footer{text-align:center;color:var(--cinza);font-size:.8rem;padding:16px}
+  @media (max-width:520px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="in"><div><h1>⚡ Laboratório do Reflexo</h1><small>Fundamentos de IA e Análise de Dados · SENAI</small></div><small id="ola"></small></div></header>
+<main>
+
+<!-- TELA 1: identificação -->
+<section id="t1" class="card">
+  <h2>1. Quem é você?</h2>
+  <label for="nome">Seu nome (aparece só aqui na sua tela)</label>
+  <input id="nome" type="text" maxlength="40" placeholder="Ex.: Ana">
+  <label for="apelido">Apelido para a turma (é ele que vai para o painel)</label>
+  <input id="apelido" type="text" maxlength="20" placeholder="Ex.: Raio, Pixel, Coruja">
+  <p class="aviso">🔒 <b>Privacidade:</b> o seu <b>nome não sai deste computador</b>. Para a turma e para o arquivo de dados vai só o <b>apelido</b>.</p>
+  <div class="erro" id="e1"></div>
+  <button class="pri" onclick="irPerguntas()">Continuar ➜</button>
+</section>
+
+<!-- TELA 2: perguntas -->
+<section id="t2" class="card oculto">
+  <h2>2. Antes do teste, responda</h2>
+  <label for="sono">Quantas horas você dormiu esta noite?</label>
+  <input id="sono" type="number" min="0" max="24" step="0.5" placeholder="Ex.: 7">
+  <label>Tomou café ou energético hoje?</label>
+  <div class="op" data-campo="cafe"><button class="sec" type="button">Sim</button><button class="sec" type="button">Não</button></div>
+  <label for="cel">Quantas horas por dia você usa o celular?</label>
+  <input id="cel" type="number" min="0" max="24" step="0.5" placeholder="Ex.: 5">
+  <label>Joga videogame toda semana?</label>
+  <div class="op" data-campo="vg"><button class="sec" type="button">Sim</button><button class="sec" type="button">Não</button></div>
+  <div class="erro" id="e2"></div>
+  <button class="pri" onclick="irTeste()">Ir para o teste ➜</button>
+</section>
+
+<!-- TELA 3: teste -->
+<section id="t3" class="card oculto">
+  <h2>3. O teste: 5 tentativas</h2>
+  <p>Quando a tela ficar <b style="color:var(--verde)">VERDE</b>, clique (ou toque) o mais rápido que puder. Clicou antes? Não conta: tente de novo.</p>
+  <div id="arena" class="st-ini" onpointerdown="toque(event)">Clique aqui para começar<small>Tentativa 1 de 5</small></div>
+  <div class="bolinhas" id="bol"><span></span><span></span><span></span><span></span><span></span></div>
+</section>
+
+<!-- TELA 4: resultado -->
+<section id="t4" class="card oculto">
+  <h2 id="tituloRes">4. Seu resultado</h2>
+  <p style="margin:0;color:var(--cinza)">Seu tempo médio</p>
+  <p class="num"><span id="media"></span> ms</p>
+  <div class="grid">
+    <div class="kpi"><b id="melhor"></b><span>Melhor (ms)</span></div>
+    <div class="kpi"><b id="pior"></b><span>Pior (ms)</span></div>
+    <div class="kpi"><b>~273</b><span>Média das pessoas na internet (ms)</span></div>
+  </div>
+  <p id="frase"></p>
+  <svg id="graf" viewBox="0 0 520 200" width="100%" role="img" aria-label="Gráfico das 5 tentativas"></svg>
+  <table><thead><tr><th>Tentativa</th><th>Tempo (ms)</th></tr></thead><tbody id="tab"></tbody></table>
+  <div class="acoes">
+    <button class="pri" id="btEnviar" onclick="enviarTurma()">📤 Enviar para a turma</button>
+    <button class="sec on" onclick="baixarCSV()">⬇️ Baixar meus dados (CSV)</button>
+    <button class="sec" onclick="denovo()">🔁 Fazer de novo</button>
+  </div>
+  <p class="aviso" id="avisoForm" style="margin-top:14px">O botão <b>Enviar para a turma</b> abre o formulário já preenchido. Confira e clique em <b>Enviar</b> lá no formulário.</p>
+  <p class="aviso oculto" id="semForm" style="margin-top:14px">O professor ainda não ligou o formulário. Use <b>Baixar meus dados</b> e entregue o arquivo.</p>
+</section>
+
+</main>
+<footer>Os dados ficam só no seu navegador até você baixar ou enviar. Nada é salvo nesta página.</footer>
+
+<script>
+// ===== CONFIGURAÇÃO DO PROFESSOR: cole o link pré-preenchido entre as aspas =====
+const LINK_FORMULARIO = "";
+// ===============================================================================
+
+const d = { nome:"", apelido:"", sono:null, cafe:"", cel:null, vg:"", tempos:[] };
+const $ = id => document.getElementById(id);
+function mostra(id){ ["t1","t2","t3","t4"].forEach(t => $(t).classList.toggle("oculto", t !== id)); window.scrollTo(0,0); }
+
+document.querySelectorAll(".op").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => {
+  g.querySelectorAll("button").forEach(x => x.classList.remove("on")); b.classList.add("on"); d[g.dataset.campo] = b.textContent;
+}));
+
+function irPerguntas(){
+  d.nome = $("nome").value.trim(); d.apelido = $("apelido").value.trim();
+  if (!d.apelido) { $("e1").textContent = "Escolha um apelido."; return; }
+  if (d.nome && d.apelido.toLowerCase().includes(d.nome.toLowerCase().split(" ")[0])) { $("e1").textContent = "O apelido não pode ter o seu nome. Escolha outro."; return; }
+  $("e1").textContent = ""; $("ola").textContent = d.nome ? "Olá, " + d.nome + "!" : ""; mostra("t2");
+}
+function irTeste(){
+  const s = parseFloat($("sono").value), c = parseFloat($("cel").value);
+  if (isNaN(s) || s < 0 || s > 24) { $("e2").textContent = "Horas de sono: um número de 0 a 24."; return; }
+  if (!d.cafe) { $("e2").textContent = "Responda se tomou café."; return; }
+  if (isNaN(c) || c < 0 || c > 24) { $("e2").textContent = "Horas de celular: um número de 0 a 24."; return; }
+  if (!d.vg) { $("e2").textContent = "Responda sobre videogame."; return; }
+  d.sono = s; d.cel = c; $("e2").textContent = ""; d.tempos = []; desenhaBolinhas(); estado("ini"); mostra("t3");
+}
+
+let fase = "ini", timer = null, t0 = 0;
+function estado(f, texto, sub){
+  fase = f; const a = $("arena");
+  a.className = { ini:"st-ini", esp:"st-esp", ja:"st-ja", cedo:"st-cedo", res:"st-res" }[f];
+  const n = d.tempos.length + 1;
+  const padrao = { ini:["Clique aqui para começar", "Tentativa " + n + " de 5"], esp:["Espere o verde...", "Não clique ainda"],
+                   ja:["CLIQUE!", ""], cedo:["Cedo demais! 😅", "Clique para tentar de novo"] }[f] || [texto, sub];
+  a.innerHTML = (texto || padrao[0]) + "<small>" + (sub !== undefined ? sub : padrao[1]) + "</small>";
+}
+function toque(ev){
+  ev.preventDefault();
+  if (fase === "ini" || fase === "cedo" || fase === "res") {
+    estado("esp"); clearTimeout(timer);
+    timer = setTimeout(() => { estado("ja"); t0 = performance.now(); }, 1500 + Math.random() * 2500);
+  } else if (fase === "esp") {
+    clearTimeout(timer); estado("cedo");
+  } else if (fase === "ja") {
+    const ms = Math.round(performance.now() - t0); d.tempos.push(ms); desenhaBolinhas();
+    if (d.tempos.length >= 5) { setTimeout(resultado, 700); estado("res", ms + " ms", "Pronto! Calculando..."); }
+    else estado("res", ms + " ms", "Clique para a tentativa " + (d.tempos.length + 1) + " de 5");
+  }
+}
+function desenhaBolinhas(){ [...$("bol").children].forEach((b, i) => b.classList.toggle("ok", i < d.tempos.length)); }
+
+function media(){ return Math.round(d.tempos.reduce((a, b) => a + b, 0) / d.tempos.length); }
+function resultado(){
+  const m = media(), mel = Math.min(...d.tempos), pio = Math.max(...d.tempos);
+  $("tituloRes").textContent = "4. Seu resultado" + (d.nome ? ", " + d.nome : "");
+  $("media").textContent = m; $("melhor").textContent = mel; $("pior").textContent = pio;
+  $("frase").textContent = m < 230 ? "⚡ Reflexo de piloto! Bem abaixo da média." : m < 290 ? "👍 Dentro da média das pessoas." : "🐢 Um pouco acima da média. Dormiu bem?";
+  $("tab").innerHTML = d.tempos.map((t, i) => "<tr><td>" + (i + 1) + "</td><td>" + t + "</td></tr>").join("");
+  grafico(); const temForm = LINK_FORMULARIO.includes("entry.");
+  $("btEnviar").classList.toggle("oculto", !temForm); $("avisoForm").classList.toggle("oculto", !temForm); $("semForm").classList.toggle("oculto", temForm);
+  mostra("t4");
+}
+function grafico(){
+  const W = 520, H = 200, pad = 36, max = Math.max(...d.tempos, 300) * 1.15, bw = (W - pad * 2) / 5;
+  let s = '<line x1="' + pad + '" y1="' + (H - 24) + '" x2="' + (W - pad) + '" y2="' + (H - 24) + '" stroke="#c9cfdb"/>';
+  const yRef = (H - 24) - (273 / max) * (H - 50);
+  s += '<line x1="' + pad + '" y1="' + yRef + '" x2="' + (W - pad) + '" y2="' + yRef + '" stroke="#e0a800" stroke-dasharray="5 4"/><text x="' + (W - pad) + '" y="' + (yRef - 5) + '" font-size="11" fill="#9a7400" text-anchor="end">média da internet 273 ms</text>';
+  d.tempos.forEach((t, i) => {
+    const h = (t / max) * (H - 50), x = pad + i * bw + bw * 0.2, y = (H - 24) - h;
+    s += '<rect x="' + x + '" y="' + y + '" width="' + (bw * 0.6) + '" height="' + h + '" rx="5" fill="#0B4FA8"/>';
+    s += '<text x="' + (x + bw * 0.3) + '" y="' + (y - 5) + '" font-size="12" text-anchor="middle" fill="#1d2433">' + t + '</text>';
+    s += '<text x="' + (x + bw * 0.3) + '" y="' + (H - 8) + '" font-size="11" text-anchor="middle" fill="#6b7280">' + (i + 1) + 'ª</text>';
+  });
+  $("graf").innerHTML = s;
+}
+function baixarCSV(){
+  const data = new Date().toLocaleString("pt-BR");
+  const num = v => String(v).replace(".", ",");
+  let csv = "Apelido;Tentativa;Tempo_ms;Sono_h;Cafe;Celular_h;Videogame;Data\n";
+  d.tempos.forEach((t, i) => { csv += [d.apelido, i + 1, t, num(d.sono), d.cafe, num(d.cel), d.vg, data].join(";") + "\n"; });
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "reflexo_" + d.apelido.replace(/[^\w-]+/g, "_") + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+}
+function enviarTurma(){
+  try {
+    const u = new URL(LINK_FORMULARIO); const p = u.searchParams; const novos = new URLSearchParams();
+    let simVistos = 0;
+    for (const [k, v] of p) {
+      if (v === "APELIDO") novos.append(k, d.apelido);
+      else if (v === "111") novos.append(k, media());
+      else if (v === "222") novos.append(k, d.sono);
+      else if (v === "333") novos.append(k, d.cel);
+      else if (v === "Sim") { novos.append(k, simVistos === 0 ? d.cafe : d.vg); simVistos++; }
+      else novos.append(k, v);
+    }
+    u.search = novos.toString(); window.open(u.toString(), "_blank");
+  } catch (e) { alert("O link do formulário está errado. Avise o professor."); }
+}
+function denovo(){ d.tempos = []; desenhaBolinhas(); estado("ini"); mostra("t3"); }
+</script>
+</body>
+</html>
